@@ -16,6 +16,8 @@
 // See the Apache License, Version 2.0 for the specific language
 // governing permissions and limitations under the License.
 
+#import <Foundation/Foundation.h>
+
 #import "ADOAuth2Constants.h"
 
 NSString *const OAUTH2_ACCESS_TOKEN       = @"access_token";

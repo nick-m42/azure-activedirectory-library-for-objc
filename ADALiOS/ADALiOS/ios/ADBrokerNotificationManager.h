@@ -16,14 +16,16 @@
 // See the Apache License, Version 2.0 for the specific language
 // governing permissions and limitations under the License.
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 #import "ADAuthenticationContext.h"
 
-@interface ADBrokeriOSNotificationManager : NSObject
+@interface ADBrokerNotificationManager : NSObject
 
 @property (copy) ADAuthenticationCallback callbackForBroker;
 
-+(ADBrokeriOSNotificationManager*)sharedInstance;
++(ADBrokerNotificationManager*)sharedInstance;
 
 -(void) enableOnActiveNotification:(ADAuthenticationCallback) callback;
 

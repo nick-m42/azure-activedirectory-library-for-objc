@@ -16,11 +16,11 @@
 // See the Apache License, Version 2.0 for the specific language
 // governing permissions and limitations under the License.
 
-#import "ADBrokeriOSNotificationManager.h"
+#import "ADBrokerNotificationManager.h"
 #import "ADAL.h"
 #import "ADAuthenticationResult+Internal.h"
 
-@implementation ADBrokeriOSNotificationManager
+@implementation ADBrokerNotificationManager
 
 -(id) init
 {
@@ -42,15 +42,15 @@
     _callbackForBroker = nil;
 }
 
-+(ADBrokeriOSNotificationManager*)sharedInstance
++(ADBrokerNotificationManager*)sharedInstance
 {
     /* Below is a standard objective C singleton pattern*/
-    static ADBrokeriOSNotificationManager* instance;
+    static ADBrokerNotificationManager* instance;
     static dispatch_once_t onceToken;
     @synchronized(self)
     {
         dispatch_once(&onceToken, ^{
-            instance = [[ADBrokeriOSNotificationManager alloc] initInternal];
+            instance = [[ADBrokerNotificationManager alloc] initInternal];
         });
     }
     return instance;

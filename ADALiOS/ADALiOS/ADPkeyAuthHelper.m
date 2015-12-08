@@ -19,6 +19,7 @@
 #import "ADPkeyAuthHelper.h"
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
+#import <Security/Security.h>
 #import "ADRegistrationInformation.h"
 #import "NSString+ADHelperMethods.h"
 #import "ADWorkPlaceJoin.h"
@@ -170,8 +171,8 @@
     return [ADJwtHelper createSignedJWTforHeader:header payload:payload signingKey:[identity privateKey]];
 }
 
-+(NSData *) sign: (SecKeyRef) privateKey
-            data:(NSData *) plainData
++ (NSData *)sign:(SecKeyRef)privateKey
+            data:(NSData *)plainData
 {
     NSData* signedHash = nil;
     size_t signedHashBytesSize = SecKeyGetBlockSize(privateKey);
@@ -197,7 +198,8 @@
             free(signedHashBytes);
         return nil;
     }
-    
+
+#if TARGET_OS_IPHONE
     OSStatus status = SecKeyRawSign(privateKey,
                                     kSecPaddingPKCS1SHA256,
                                     hashBytes,
@@ -208,14 +210,44 @@
     [ADLogger log:ADAL_LOG_LEVEL_INFO message:@"Status returned from data signing - " errorCode:status info:nil ];
     signedHash = [NSData dataWithBytes:signedHashBytes
                                 length:(NSUInteger)signedHashBytesSize];
-    
-    if (hashBytes) {
+#else // !TARGET_OS_IPHONE
+    CFErrorRef error = nil;
+    SecTransformRef signingTransform = SecSignTransformCreate(privateKey, &error);
+    if (signingTransform == NULL)
+        return NULL;
+
+    Boolean success = SecTransformSetAttribute(signingTransform, kSecDigestTypeAttribute, kSecDigestSHA2, &error);
+
+    if (success)
+    {
+        success = SecTransformSetAttribute(signingTransform,
+                                           kSecTransformInputAttributeName,
+                                           hashBytes,
+                                           &error) != false;
+    }
+    if (!success) {
+        CFRelease(signingTransform);
+        return NULL;
+    }
+
+    CFDataRef signature = SecTransformExecute(signingTransform, &error);
+    CFRetain(signature);
+    signedHash = (__bridge id)signature;
+    CFRelease(signingTransform);
+    CFRelease(signature);
+#endif
+    if (hashBytes)
+    {
         free(hashBytes);
+        hashBytes = NULL;
     }
     
-    if (signedHashBytes) {
+    if (signedHashBytes)
+    {
         free(signedHashBytes);
+        signedHashBytes = NULL;
     }
+    
     return signedHash;
 }
 

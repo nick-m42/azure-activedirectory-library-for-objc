@@ -20,15 +20,12 @@
 #import "ADWorkPlaceJoinUtil.h"
 #import "ADWorkPlaceJoinConstants.h"
 #import "ADRegistrationInformation.h"
-#import <UIKit/UIKit.h>
-#import <MessageUI/MessageUI.h>
 
 
 @implementation ADWorkPlaceJoin
 
 NSArray *_upnParts;
 NSString *_userPrincipalName;
-UIViewController * _callingViewController;
 
 static ADWorkPlaceJoin* wpjManager;
 

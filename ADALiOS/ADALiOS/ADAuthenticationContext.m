@@ -39,7 +39,6 @@
 #import "ADClientMetrics.h"
 #import "NSString+ADHelperMethods.h"
 #import "ADHelpers.h"
-#import "ADBrokerNotificationManager.h"
 #import "ADOAuth2Constants.h"
 #import "ADAuthenticationRequest.h"
 
@@ -47,6 +46,8 @@
 
 #import <objc/runtime.h>
 
+
+#if TARGET_OS_IPHONE
 typedef BOOL (*applicationOpenURLPtr)(id, SEL, UIApplication*, NSURL*, NSString*, id);
 IMP __original_ApplicationOpenURL = NULL;
 
@@ -63,11 +64,13 @@ BOOL __swizzle_ApplicationOpenURL(id self, SEL _cmd, UIApplication* application,
     [ADAuthenticationContext handleBrokerResponse:url];
     return YES;
 }
+#endif // TARGET_OS_IPHONE
 
 typedef void(^ADAuthorizationCodeCallback)(NSString*, ADAuthenticationError*);
 
 @implementation ADAuthenticationContext
 
+#if TARGET_OS_IPHONE
 + (void) load
 {
     __block id observer = nil;
@@ -112,6 +115,8 @@ typedef void(^ADAuthorizationCodeCallback)(NSString*, ADAuthenticationError*);
                 }];
     
 }
+
+#endif // TARGET_OS_IPHONE
 
 - (id)init
 {

@@ -19,11 +19,11 @@
 #import <Foundation/Foundation.h>
 #import "ADAuthenticationContext.h"
 
-@interface ADBrokerNotificationManager : NSObject
+@interface ADBrokeriOSNotificationManager : NSObject
 
 @property (copy) ADAuthenticationCallback callbackForBroker;
 
-+(ADBrokerNotificationManager*)sharedInstance;
++(ADBrokeriOSNotificationManager*)sharedInstance;
 
 -(void) enableOnActiveNotification:(ADAuthenticationCallback) callback;
 

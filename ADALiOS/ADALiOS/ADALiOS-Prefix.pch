@@ -25,7 +25,13 @@
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
+
+#if TARGET_OS_IPHONE
     #import <UIKit/UIKit.h>
+#else
+    #import <Cocoa/Cocoa.h>
+    #import <WebKit/WebKit.h>
+#endif
 
 #ifndef DebugLog
 #ifdef DEBUG

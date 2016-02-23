@@ -77,6 +77,7 @@ const int sAsyncContextTimeout = 10;
     [self adTestBegin:ADAL_LOG_LEVEL_ERROR];//Majority of the tests rely on errors
     mAuthority = @"https://login.windows.net/msopentechbv.onmicrosoft.com";
     mDefaultTokenCache = (ADKeychainTokenCacheStore*)([ADAuthenticationSettings sharedInstance].defaultTokenCacheStore);
+    [ADAuthenticationSettings sharedInstance].credentialsType = AD_CREDENTIALS_EMBEDDED;
     XCTAssertNotNil(mDefaultTokenCache);
     XCTAssertTrue([mDefaultTokenCache isKindOfClass:[ADKeychainTokenCacheStore class]]);
     mRedirectURL = [NSURL URLWithString:@"http://todolistclient/"];
@@ -152,55 +153,50 @@ const int sAsyncContextTimeout = 10;
 {
     //Authority only:
     ADAuthenticationError* error;
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil error:&error];
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
     //Authority & validate:
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil validateAuthority:YES error:&error];
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority validateAuthority:YES error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil validateAuthority:NO error:&error];
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority validateAuthority:NO error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
     //Authority and cache store:
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil tokenCacheStore:nil error:&error];
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority tokenCacheStore:nil error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority
                                                            tokenCacheStore:mDefaultTokenCache
                                                                      error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
     //Authority, validate and cache store:
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority
                                                          validateAuthority:NO //Non-default value.
                                                            tokenCacheStore:mDefaultTokenCache
                                                                      error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority
                                                          validateAuthority:NO
                                                            tokenCacheStore:nil
                                                                      error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority
                                                          validateAuthority:YES //Non-default value.
                                                            tokenCacheStore:mDefaultTokenCache
                                                                      error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil
+    mContext = [ADAuthenticationContext authenticationContextWithAuthority:authority
                                                          validateAuthority:YES
                                                            tokenCacheStore:nil
                                                                      error:&error];
     [self adValidateFactoryForInvalidArgument:@"authority" error:error];
     
-    mContext = [ADAuthenticationContext authenticationContextWithAuthority:nil
-                                                         validateAuthority:YES
-                                                           tokenCacheStore:nil
-                                                                     error:&error];
-    [self adValidateFactoryForInvalidArgument:@"authority" error:error];
 }
 
 /* Tests all of the static creators by passing authority as nil. Appropriate error should be returned in all cases. */
@@ -370,7 +366,7 @@ const int sAsyncContextTimeout = 10;
     [self prepareForAsynchronousCall];
     
     __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
-    [self adCallAndWaitWithFile:@"" __FILE__ line:__LINE__ semaphore:sem block:^
+    [self adCallAndWaitWithFile:@"" __FILE__ line:line semaphore:sem block:^
      {
          [self->mContext acquireTokenForAssertion:self->mAssertion
                                     assertionType:self->mAssertionType
@@ -395,9 +391,8 @@ const int sAsyncContextTimeout = 10;
 -(void) asynchronousAcquireTokenWithLine: (int) line
 {
     [self prepareForAsynchronousCall];
-    
     __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
-    [self adCallAndWaitWithFile:@"" __FILE__ line:__LINE__ semaphore:sem block:^
+    [self adCallAndWaitWithFile:@"" __FILE__ line:line semaphore:sem block:^
      {
          ADAuthenticationCallback callback = ^(ADAuthenticationResult* result){
              //Fill in the iVars with the result:
@@ -1053,6 +1048,7 @@ const int sAsyncContextTimeout = 10;
     XCTAssertNil([mProtocolContext findCacheItemWithKey:key userId:item.userInformation.userId useAccessToken:&useAccessToken error:&error]);
 }
 
+#if TEST_HITS_NETWORK
 -(void) testBadAuthorityWithValidation
 {
     mAuthority = @"https://MyFakeAuthority.microsoft.com/MSOpenTechBV.OnMicrosoft.com";
@@ -1066,6 +1062,7 @@ const int sAsyncContextTimeout = 10;
     ADAssertLongEquals(AD_FAILED, mResult.status);
     ADAssertLongEquals(AD_ERROR_AUTHORITY_VALIDATION, mError.code);
 }
+#endif // TEST_HITS_NETWORK
 
 //Used when the framework needs to display an UI and cannot, raising an error
 -(void) validateUIError
@@ -1105,7 +1102,8 @@ const int sAsyncContextTimeout = 10;
     mPromptBehavior = AD_PROMPT_ALWAYS;
     [self validateUIError];
 }
- 
+
+#if TEST_HITS_NETWORK
 -(void) testBadRefreshToken
 {
     //Create a normal authority (not a test one):
@@ -1136,6 +1134,7 @@ const int sAsyncContextTimeout = 10;
     acquireTokenAsync;//Will attempt to use the broad refresh token and fail.
     ADAssertLongEquals(0, [self cacheCount]);
 }
+#endif // TEST_HITS_NETWORK
 
 //Creates the context with
 -(void) testUnreachableAuthority
@@ -1168,7 +1167,7 @@ const int sAsyncContextTimeout = 10;
 {
     [self adSetLogTolerance:ADAL_LOG_LEVEL_INFO];
     [self addCacheWithToken:@"cacheToken" refreshToken:nil];
-    
+
     __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     ADAuthenticationCallback innerCallback = ^(ADAuthenticationResult* result)
     {
@@ -1177,7 +1176,7 @@ const int sAsyncContextTimeout = 10;
         mError = mResult.error;
         dispatch_semaphore_signal(sem);
     };
-    
+
     [self adCallAndWaitWithFile:@"" __FILE__ line:__LINE__ semaphore:sem block:^
      {
          [mContext acquireTokenWithResource:mResource
@@ -1198,7 +1197,7 @@ const int sAsyncContextTimeout = 10;
      }];
     [self validateAsynchronousResultWithLine:__LINE__];
     ADAssertLongEquals(AD_SUCCEEDED, mResult.status);
-    
+
     [self adCallAndWaitWithFile:@"" __FILE__ line:__LINE__ semaphore:sem block:^
      {
          [mContext acquireTokenWithResource:mResource
@@ -1345,6 +1344,7 @@ const int sAsyncContextTimeout = 10;
 }
 
 //Hits a the cloud with either a bad server or a bad refresh token:
+#if TEST_HITS_NETWORK
 -(void) testRefreshingTokenWithServerErrors
 {
     [ADAuthenticationSettings sharedInstance].requestTimeOut = 5;
@@ -1371,5 +1371,6 @@ const int sAsyncContextTimeout = 10;
     ADAssertStringEquals(mResult.error.protocolCode, @"invalid_grant");
     XCTAssertTrue([mResult.error.errorDetails.lowercaseString adContainsString:@"refresh token"]);
 }
+#endif // TEST_HITS_NETWORK
 
 @end

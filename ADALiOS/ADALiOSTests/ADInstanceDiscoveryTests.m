@@ -88,6 +88,7 @@ const int sAsyncTimeout = 10;//in seconds
 {
     [super setUp];
     [self adTestBegin:ADAL_LOG_LEVEL_INFO];
+    [ADAuthenticationSettings sharedInstance].requestTimeOut = 10;
     mValidated = NO;
     mInstanceDiscovery = [ADInstanceDiscovery sharedInstance];
     mTestInstanceDiscovery = (id<TestInstanceDiscovery>)mInstanceDiscovery;
@@ -308,7 +309,7 @@ const int sAsyncTimeout = 10;//in seconds
 {
     mError = nil;//Reset
     __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
-    [self adCallAndWaitWithFile:@"" __FILE__ line:__LINE__ semaphore:sem block:^
+    [self adCallAndWaitWithFile:@"" __FILE__ line:line semaphore:sem block:^
      {
          [mInstanceDiscovery validateAuthority:authority correlationId:correlationId completionBlock:^(BOOL validated, ADAuthenticationError *error)
           {
@@ -393,6 +394,7 @@ const int sAsyncTimeout = 10;//in seconds
     ADAssertStringEquals([ADInstanceDiscovery canonicalizeAuthority:@"https://login.windows.net/common?abc=123&vc=3"], authority);
 }
 
+#if TEST_HITS_NETWORK
 //Tests a real authority
 -(void) testNormalFlow
 {
@@ -418,7 +420,9 @@ const int sAsyncTimeout = 10;//in seconds
     XCTAssertTrue([mValidatedAuthorities containsObject:@"https://login.windows-ppe.net"]);
     settings.dispatchQueue = savedQueue;//Restore for the rest of the tests
 }
+#endif // TEST_HITS_NETWORK
 
+#if TEST_HITS_NETWORK
 //Ensures that an invalid authority is not approved
 -(void) testNonValidatedAuthority
 {
@@ -429,7 +433,9 @@ const int sAsyncTimeout = 10;//in seconds
     XCTAssertNotNil(mError);
     ADAssertLongEquals(AD_ERROR_AUTHORITY_VALIDATION, mError.code);
 }
+#endif // TEST_HITS_NETWORK
 
+#if TEST_HITS_NETWORK
 -(void) testUnreachableServer
 {
     [self adSetLogTolerance:ADAL_LOG_LEVEL_ERROR];
@@ -451,5 +457,6 @@ const int sAsyncTimeout = 10;//in seconds
     XCTAssertFalse(mValidated);
     XCTAssertNotNil(mError);
 }
+#endif // TEST_HITS_NETWORK
 
 @end

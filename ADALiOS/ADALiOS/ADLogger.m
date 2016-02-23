@@ -94,6 +94,7 @@ NSUUID* requestCorrelationId;
     }
 }
 
+
 +(void) log: (ADAL_LOG_LEVEL)logLevel
     message: (NSString*) message
   errorCode: (NSInteger) errorCode
@@ -186,12 +187,18 @@ additionalInformation: (NSString*) additionalInformation
 
 +(void) setCorrelationId: (NSUUID*) correlationId
 {
-    requestCorrelationId = correlationId;
+    @synchronized(self)
+    {
+        requestCorrelationId = correlationId;
+    }
 }
 
 +(NSUUID*) getCorrelationId
 {
-    return requestCorrelationId;
+    @synchronized(self)
+    {
+        return requestCorrelationId;
+    }
 }
 
 

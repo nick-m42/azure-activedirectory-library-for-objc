@@ -181,6 +181,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
                     assertionType: (ADAssertionType) assertionType
                          resource: (NSString*) resource
                          clientId: (NSString*) clientId
+                     clientSecret: (NSString*) clientSecret
                            userId: (NSString*) userId
                   completionBlock: (ADAuthenticationCallback) completionBlock;
 
@@ -198,6 +199,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
  */
 -(void) acquireTokenWithResource: (NSString*) resource
                         clientId: (NSString*) clientId
+                    clientSecret: (NSString*) clientSecret
                      redirectUri: (NSURL*) redirectUri
                  completionBlock: (ADAuthenticationCallback) completionBlock;
 
@@ -216,6 +218,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
  */
 -(void) acquireTokenWithResource: (NSString*) resource
                         clientId: (NSString*) clientId
+                    clientSecret: (NSString*) clientSecret
                      redirectUri: (NSURL*) redirectUri
                           userId: (NSString*) userId
                  completionBlock: (ADAuthenticationCallback) completionBlock;
@@ -236,6 +239,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
  */
 -(void)  acquireTokenWithResource: (NSString*) resource
                          clientId: (NSString*) clientId
+                     clientSecret: (NSString*) clientSecret
                       redirectUri: (NSURL*) redirectUri
                            userId: (NSString*) userId
              extraQueryParameters: (NSString*) queryParams
@@ -254,6 +258,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
  */
 -(void)  acquireTokenWithResource: (NSString*) resource
                          clientId: (NSString*) clientId
+                     clientSecret: (NSString*) clientSecret
                       redirectUri: (NSURL*) redirectUri
                    promptBehavior: (ADPromptBehavior) promptBehavior
                            userId: (NSString*) userId
@@ -271,6 +276,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
  */
 -(void) acquireTokenSilentWithResource: (NSString*) resource
                               clientId: (NSString*) clientId
+                          clientSecret: (NSString*) clientSecret
                            redirectUri: (NSURL*) redirectUri
                        completionBlock: (ADAuthenticationCallback) completionBlock;
 
@@ -287,6 +293,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
  */
 -(void) acquireTokenSilentWithResource: (NSString*) resource
                               clientId: (NSString*) clientId
+                          clientSecret: (NSString*) clientSecret
                            redirectUri: (NSURL*) redirectUri
                                 userId: (NSString*) userId
                        completionBlock: (ADAuthenticationCallback) completionBlock;
@@ -300,6 +307,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
  */
 -(void) acquireTokenByRefreshToken: (NSString*) refreshToken
                           clientId: (NSString*) clientId
+                      clientSecret: (NSString*) clientSecret
                    completionBlock: (ADAuthenticationCallback) completionBlock;
 
 /*! Follows the OAuth2 protocol (RFC 6749). Uses the refresh token to obtain an access token (and another refresh token). The method
@@ -312,6 +320,7 @@ typedef void(^ADAuthenticationCallback)(ADAuthenticationResult* result);
  */
 -(void) acquireTokenByRefreshToken: (NSString*) refreshToken
                           clientId: (NSString*) clientId
+                      clientSecret: (NSString*) clientSecret
                           resource: (NSString*) resource
                    completionBlock: (ADAuthenticationCallback) completionBlock;
 

@@ -205,11 +205,13 @@ return; \
                     assertionType: (ADAssertionType) assertionType
                          resource: (NSString*) resource
                          clientId: (NSString*) clientId
+                     clientSecret: (NSString*) clientSecret
                            userId: (NSString*) userId
                   completionBlock: (ADAuthenticationCallback) completionBlock{
     API_ENTRY;
     return [self internalAcquireTokenForAssertion:assertion
                                          clientId:clientId
+                                     clientSecret:clientSecret
                                          resource: resource
                                     assertionType:  assertionType
                                            userId:userId
@@ -224,12 +226,14 @@ return; \
 
 -(void) acquireTokenWithResource: (NSString*) resource
                         clientId: (NSString*) clientId
+                    clientSecret: (NSString*) clientSecret
                      redirectUri: (NSURL*) redirectUri
                  completionBlock: (ADAuthenticationCallback) completionBlock
 {
     API_ENTRY;
     return [self internalAcquireTokenWithResource:resource
                                          clientId:clientId
+                                     clientSecret:clientSecret
                                       redirectUri:redirectUri
                                    promptBehavior:AD_PROMPT_AUTO
                                            silent:NO
@@ -244,6 +248,7 @@ return; \
 
 -(void) acquireTokenWithResource: (NSString*) resource
                         clientId: (NSString*) clientId
+                    clientSecret: (NSString*) clientSecret
                      redirectUri: (NSURL*) redirectUri
                           userId: (NSString*) userId
                  completionBlock: (ADAuthenticationCallback) completionBlock
@@ -251,6 +256,7 @@ return; \
     API_ENTRY;
     [self internalAcquireTokenWithResource:resource
                                   clientId:clientId
+                              clientSecret:clientSecret
                                redirectUri:redirectUri
                             promptBehavior:AD_PROMPT_AUTO
                                     silent:NO
@@ -266,6 +272,7 @@ return; \
 
 -(void) acquireTokenWithResource: (NSString*) resource
                         clientId: (NSString*)clientId
+                    clientSecret: (NSString*) clientSecret
                      redirectUri: (NSURL*) redirectUri
                           userId: (NSString*) userId
             extraQueryParameters: (NSString*) queryParams
@@ -274,6 +281,7 @@ return; \
     API_ENTRY;
     [self internalAcquireTokenWithResource:resource
                                   clientId:clientId
+                              clientSecret:clientSecret
                                redirectUri:redirectUri
                             promptBehavior:AD_PROMPT_AUTO
                                     silent:NO
@@ -288,12 +296,14 @@ return; \
 
 -(void) acquireTokenSilentWithResource: (NSString*) resource
                               clientId: (NSString*) clientId
+                          clientSecret: (NSString*) clientSecret
                            redirectUri: (NSURL*) redirectUri
                        completionBlock: (ADAuthenticationCallback) completionBlock
 {
     API_ENTRY;
     return [self internalAcquireTokenWithResource:resource
                                          clientId:clientId
+                                     clientSecret:clientSecret
                                       redirectUri:redirectUri
                                    promptBehavior:AD_PROMPT_AUTO
                                            silent:YES
@@ -308,6 +318,7 @@ return; \
 
 -(void) acquireTokenSilentWithResource: (NSString*) resource
                               clientId: (NSString*) clientId
+                          clientSecret: (NSString*) clientSecret
                            redirectUri: (NSURL*) redirectUri
                                 userId: (NSString*) userId
                        completionBlock: (ADAuthenticationCallback) completionBlock
@@ -315,6 +326,7 @@ return; \
     API_ENTRY;
     return [self internalAcquireTokenWithResource:resource
                                          clientId:clientId
+                                     clientSecret:clientSecret
                                       redirectUri:redirectUri
                                    promptBehavior:AD_PROMPT_AUTO
                                            silent:YES
@@ -344,6 +356,7 @@ return; \
                 assertionType: (ADAssertionType) assertionType
                      resource: (NSString*) resource
                      clientId: (NSString*) clientId
+                 clientSecret: (NSString*) clientSecret
                        userId: (NSString*) userId
                 correlationId: (NSUUID*) correlationId
               completionBlock: (ADAuthenticationCallback)completionBlock
@@ -374,6 +387,7 @@ return; \
     //Now attempt to use the refresh token of the passed cache item:
     [self internalAcquireTokenByRefreshToken:item.refreshToken
                                     clientId:clientId
+                                clientSecret:clientSecret
                                     resource:resource
                                       userId:item.userInformation.userId
                                    cacheItem:item
@@ -420,6 +434,7 @@ return; \
                                    assertionType:assertionType
                                         resource:resource
                                         clientId:clientId
+                                    clientSecret:clientSecret
                                           userId:userId
                                    correlationId:correlationId
                                  completionBlock:completionBlock];
@@ -432,6 +447,7 @@ return; \
          //call acquireToken
          [self internalAcquireTokenForAssertion:samlAssertion
                                        clientId:clientId
+                                   clientSecret:clientSecret
                                        resource:resource
                                   assertionType: assertionType
                                          userId:userId
@@ -450,6 +466,7 @@ return; \
                useAccessToken: (BOOL) useAccessToken
                      resource: (NSString*) resource
                      clientId: (NSString*) clientId
+                 clientSecret: (NSString*) clientSecret
                   redirectUri: (NSURL*) redirectUri
                promptBehavior: (ADPromptBehavior) promptBehavior
                        silent: (BOOL) silent
@@ -484,6 +501,7 @@ return; \
     //Now attempt to use the refresh token of the passed cache item:
     [self internalAcquireTokenByRefreshToken:item.refreshToken
                                     clientId:clientId
+                                clientSecret:clientSecret
                                     resource:resource
                                       userId:item.userInformation.userId
                                    cacheItem:item
@@ -528,6 +546,7 @@ return; \
                                   useAccessToken:NO
                                         resource:resource
                                         clientId:clientId
+                                    clientSecret:clientSecret
                                      redirectUri:redirectUri
                                   promptBehavior:promptBehavior
                                           silent:silent
@@ -544,6 +563,7 @@ return; \
          //call acquireToken
          [self internalAcquireTokenWithResource: resource
                                        clientId: clientId
+                                   clientSecret: clientSecret
                                     redirectUri: redirectUri
                                  promptBehavior: promptBehavior
                                          silent: silent
@@ -559,6 +579,7 @@ return; \
 
 -(void) acquireTokenWithResource: (NSString*) resource
                         clientId: (NSString*) clientId
+                    clientSecret: (NSString*) clientSecret
                      redirectUri: (NSURL*) redirectUri
                   promptBehavior: (ADPromptBehavior) promptBehavior
                           userId: (NSString*) userId
@@ -569,6 +590,7 @@ return; \
     THROW_ON_NIL_ARGUMENT(completionBlock);//The only argument that throws
     [self internalAcquireTokenWithResource:resource
                                   clientId:clientId
+                              clientSecret:clientSecret
                                redirectUri:redirectUri
                             promptBehavior:promptBehavior
                                     silent:NO
@@ -698,6 +720,7 @@ return; \
 
 -(void) internalAcquireTokenForAssertion: (NSString*) samlAssertion
                                 clientId: (NSString*) clientId
+                            clientSecret: (NSString*) clientSecret
                                 resource: (NSString*) resource
                            assertionType: (ADAssertionType) assertionType
                                   userId: (NSString*) userId
@@ -728,6 +751,7 @@ return; \
              {
                  [self internalAcquireTokenForAssertion:samlAssertion
                                                clientId:clientId
+                                           clientSecret:clientSecret
                                                resource:resource
                                           assertionType: assertionType
                                                  userId:userId
@@ -774,6 +798,7 @@ return; \
                           assertionType:assertionType
                                resource:resource
                                clientId:clientId
+                           clientSecret:clientSecret
                                  userId:userId
                           correlationId:correlationId
                         completionBlock:completionBlock];
@@ -787,6 +812,7 @@ return; \
                                        assertionType: assertionType
                                             resource: resource
                                             clientId: clientId
+                                        clientSecret:clientSecret
                                                scope: nil//For future use
                                        correlationId: correlationId
                                           completion: completionBlock];
@@ -797,6 +823,7 @@ return; \
 
 -(void) internalAcquireTokenWithResource: (NSString*) resource
                                 clientId: (NSString*) clientId
+                            clientSecret: (NSString*) clientSecret
                              redirectUri: (NSURL*) redirectUri
                           promptBehavior: (ADPromptBehavior) promptBehavior
                                   silent: (BOOL) silent /* Do not show web UI for authorization. */
@@ -825,6 +852,7 @@ return; \
              {
                  [self internalAcquireTokenWithResource:resource
                                                clientId:clientId
+                                           clientSecret:clientSecret
                                             redirectUri:redirectUri
                                          promptBehavior:promptBehavior
                                                  silent:silent
@@ -871,6 +899,7 @@ return; \
                          useAccessToken:accessTokenUsable
                                resource:resource
                                clientId:clientId
+                           clientSecret:clientSecret
                             redirectUri:redirectUri
                          promptBehavior:promptBehavior
                                  silent:silent
@@ -901,6 +930,7 @@ return; \
                        //Get the code first:
                        [self requestCodeByResource:resource
                                           clientId:clientId
+                                      clientSecret:clientSecret
                                        redirectUri:redirectUri
                                              scope:scope
                                             userId:userId
@@ -920,6 +950,7 @@ return; \
                                 [self requestTokenByCode:code
                                                 resource:resource
                                                 clientId:clientId
+                                            clientSecret:clientSecret
                                              redirectUri:redirectUri
                                                    scope:scope
                                            correlationId:correlationId
@@ -939,11 +970,13 @@ return; \
 
 -(void) acquireTokenByRefreshToken: (NSString*)refreshToken
                           clientId: (NSString*)clientId
+                      clientSecret: (NSString*)clientSecret
                    completionBlock: (ADAuthenticationCallback)completionBlock
 {
     API_ENTRY;
     [self internalAcquireTokenByRefreshToken:refreshToken
                                     clientId:clientId
+                                clientSecret:clientSecret
                                     resource:nil
                                       userId:nil
                                    cacheItem:nil
@@ -954,12 +987,14 @@ return; \
 
 -(void) acquireTokenByRefreshToken:(NSString*)refreshToken
                           clientId:(NSString*)clientId
+                      clientSecret:(NSString*)clientSecret
                           resource:(NSString*)resource
                    completionBlock:(ADAuthenticationCallback)completionBlock
 {
     API_ENTRY;
     [self internalAcquireTokenByRefreshToken:refreshToken
                                     clientId:clientId
+                                clientSecret:clientSecret
                                     resource:resource
                                       userId:nil
                                    cacheItem:nil
@@ -1061,6 +1096,7 @@ return; \
 //information and updates the cache:
 -(void) internalAcquireTokenByRefreshToken: (NSString*) refreshToken
                                   clientId: (NSString*) clientId
+                              clientSecret: (NSString*) clientSecret
                                   resource: (NSString*) resource
                                     userId: (NSString*) userId
                                  cacheItem: (ADTokenCacheStoreItem*) cacheItem
@@ -1087,6 +1123,7 @@ return; \
              {
                  [self internalAcquireTokenByRefreshToken:refreshToken
                                                  clientId:clientId
+                                             clientSecret:clientSecret
                                                  resource:resource
                                                    userId:userId
                                                 cacheItem:cacheItem
@@ -1105,6 +1142,10 @@ return; \
                                          refreshToken, OAUTH2_REFRESH_TOKEN,
                                          clientId, OAUTH2_CLIENT_ID,
                                          nil];
+    
+    if (clientSecret && clientSecret.length) {
+        [request_data setObject:clientSecret forKey:OAUTH2_CLIENT_SECRET];
+    }
     
     //The clang analyzer has some issues with the logic inside adIsStringNilOrBlank, as it is defined in a category.
 #ifndef __clang_analyzer__
@@ -1335,6 +1376,7 @@ return; \
 //Generates the query string, encoding the state:
 -(NSString*) queryStringFromResource: (NSString*) resource
                             clientId: (NSString*) clientId
+                        clientSecret: (NSString*) clientSecret
                          redirectUri: (NSURL*) redirectUri
                                scope: (NSString*) scope /* for future use */
                               userId: (NSString*) userId
@@ -1351,6 +1393,10 @@ return; \
                                  OAUTH2_RESOURCE, [resource adUrlFormEncode],
                                  OAUTH2_REDIRECT_URI, [[redirectUri absoluteString] adUrlFormEncode],
                                  OAUTH2_STATE, state];
+    
+    if (clientSecret && clientSecret.length) {
+        [startUrl appendFormat:@"&%@=%@", OAUTH2_CLIENT_SECRET, [clientSecret adUrlFormEncode]];
+    }
     
     [startUrl appendFormat:@"&%@", [[ADLogger adalId] adURLFormEncode]];
     
@@ -1422,6 +1468,7 @@ return; \
 //Requests an OAuth2 code to be used for obtaining a token:
 -(void) requestCodeByResource: (NSString*) resource
                      clientId: (NSString*) clientId
+                 clientSecret: (NSString*) clientSecret
                   redirectUri: (NSURL*) redirectUri
                         scope: (NSString*) scope /*for future use */
                        userId: (NSString*) userId
@@ -1445,6 +1492,7 @@ return; \
     ADAuthenticationSettings* settings = [ADAuthenticationSettings sharedInstance];
     NSString* startUrl = [self queryStringFromResource:resource
                                               clientId:clientId
+                                          clientSecret:clientSecret
                                            redirectUri:redirectUri
                                                  scope:scope
                                                 userId:userId
@@ -1499,6 +1547,7 @@ return; \
                   assertionType: (ADAssertionType) assertionType
                        resource: (NSString *) resource
                        clientId: (NSString*) clientId
+                   clientSecret: (NSString*) clientSecret
                           scope: (NSString*) scope //For future use
                   correlationId: (NSUUID*) correlationId
                      completion: (ADAuthenticationCallback) completionBlock
@@ -1515,8 +1564,14 @@ return; \
                                          [self getAssertionTypeGrantValue:assertionType], OAUTH2_GRANT_TYPE,
                                          base64String, OAUTH2_ASSERTION,
                                          clientId, OAUTH2_CLIENT_ID,
+                                         clientSecret, OAUTH2_CLIENT_SECRET,
                                          resource, OAUTH2_RESOURCE,
                                          nil];
+    
+    if (clientSecret && clientSecret.length) {
+        [request_data setObject:clientSecret forKey:OAUTH2_CLIENT_SECRET];
+    }
+    
     [self executeRequest:self.authority requestData:request_data resource:resource clientId:clientId requestCorrelationId:correlationId isHandlingPKeyAuthChallenge:NO additionalHeaders:nil completion:completionBlock];
 }
 
@@ -1536,7 +1591,8 @@ return; \
 // Generic OAuth2 Authorization Request, obtains a token from an authorization code.
 - (void)requestTokenByCode: (NSString *) code
                   resource: (NSString *) resource
-                  clientId: (NSString*) clientId
+                  clientId: (NSString *) clientId
+              clientSecret: (NSString *) clientSecret
                redirectUri: (NSURL*) redirectUri
                      scope: (NSString*) scope
              correlationId: (NSUUID*) correlationId
@@ -1553,6 +1609,10 @@ return; \
                                          clientId, OAUTH2_CLIENT_ID,
                                          [redirectUri absoluteString], OAUTH2_REDIRECT_URI,
                                          nil];
+    
+    if (clientSecret && clientSecret.length) {
+        [request_data setObject:clientSecret forKey:OAUTH2_CLIENT_SECRET];
+    }
     
     [self executeRequest:self.authority requestData:request_data resource:resource clientId:clientId requestCorrelationId:correlationId isHandlingPKeyAuthChallenge:NO additionalHeaders:nil completion:completionBlock];
 }
